@@ -4,6 +4,10 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // 修改静态资源路径（关键调整）
+// 修改前
+app.use(express.static('public'));
+
+// 修改后（需绝对路径）
 app.use(express.static(__dirname + '/public'));
 
 // 必须导出 app 供 Vercel 使用（新增）
@@ -39,8 +43,11 @@ function parseDate(input) {
 }
 
 // 根路由调整（保持原有逻辑）
+const path = require('path');
+
+// 修改根路由处理
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/views/index.html');
+  res.sendFile(path.join(__dirname, 'public', 'index.html')); // 明确指向 public 目录
 });
 
 // 保持 API 路由不变
