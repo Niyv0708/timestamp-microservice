@@ -1,8 +1,22 @@
 {
   "version": 2,
-  "functions": {
-    "api/date/[date].ts": {
-      "runtime": "edge"
+  "builds": [
+    {
+      "src": "api/date/[date].ts",
+      "use": "@vercel/node",
+      "config": {
+        "runtime": "nodejs18.x"
+      }
     }
-  }
+  ],
+  "routes": [
+    {
+      "src": "/api/([^?]*)?\\??(.*)$",
+      "dest": "/api/date/[date].ts?date=$1&$2"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/public/$1"
+    }
+  ]
 }
