@@ -1,0 +1,4 @@
+{
+  "route": "/api/:date?",
+  "method": "GET"
+}
