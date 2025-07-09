@@ -5,12 +5,19 @@
       "src": "server.js",
       "use": "@vercel/node",
       "config": { 
-        "includeFiles": ["public/**", "views/**"]
+        "includeFiles": ["public/**", "views/**"],
+        "distDir": "."  
       }
     }
   ],
   "routes": [
-    { "handle": "filesystem" }, 
-    { "src": "/(.*)", "dest": "server.js" }
+    { 
+      "src": "/api/(.*)",  
+      "dest": "server.js" 
+    },
+    { 
+      "src": "/(.*)",     
+      "dest": "/public/$1" 
+    }
   ]
 }

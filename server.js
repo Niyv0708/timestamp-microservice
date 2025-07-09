@@ -58,8 +58,19 @@ app.get('/api/:date?', (req, res) => {
 });
 
 // 仅本地开发时启动服务器（新增条件判断）
-if (process.env.NODE_ENV !== 'production') {
+// 在顶部添加环境判断
+const isProduction = process.env.NODE_ENV === 'production';
+
+// 修改静态资源配置
+app.use(express.static(isProduction ? path.join(__dirname, 'public') : 'public'));
+
+// 新增健康检查端点（用于部署验证）
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
+
+if (!isProduction) {
   app.listen(port, () => {
-    console.log(`Server running on port ${port}`);
+    console.log(`Local server running on port ${port}`);
   });
 }
