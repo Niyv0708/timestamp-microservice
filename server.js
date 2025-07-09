@@ -11,7 +11,13 @@ app.use(express.static('public'));
 app.use(express.static(__dirname + '/public'));
 
 // 必须导出 app 供 Vercel 使用（新增）
+// 文件底部新增（关键修复）
 module.exports = app;
+
+// 移除原有条件判断，改为通用启动方式
+app.listen(process.env.PORT || 3000, () => {
+  console.log('Server ready');
+});
 
 // 解析日期函数
 function parseDate(input) {

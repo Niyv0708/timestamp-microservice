@@ -1,5 +1,11 @@
 {
   "version": 2,
+  "builds": [ // 新增构建声明
+    {
+      "src": "server.js",
+      "use": "@vercel/node"
+    }
+  ],
   "routes": [
     {
       "src": "/api/(.*)",
@@ -7,10 +13,7 @@
     },
     {
       "src": "/(.*)",
-      "dest": "/public/$1",
-      "headers": {
-        "Cache-Control": "public, max-age=3600"
-      }
+      "dest": "/public/$1"
     }
   ]
 }
