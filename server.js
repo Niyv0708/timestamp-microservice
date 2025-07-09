@@ -1,6 +1,13 @@
+// 顶部新增 Vercel 适配器
 const express = require('express');
 const app = express();
 const port = process.env.PORT || 3000;
+
+// 修改静态资源路径（关键调整）
+app.use(express.static(__dirname + '/public'));
+
+// 必须导出 app 供 Vercel 使用（新增）
+module.exports = app;
 
 // 解析日期函数
 function parseDate(input) {
@@ -31,23 +38,21 @@ function parseDate(input) {
   };
 }
 
-// 提供静态文件服务
-app.use(express.static('public'));
-
-// API 路由
-app.get('/api/:date?', (req, res) => {
-  const input = req.params.date;
-  const result = parseDate(input);
-
-  res.json(result);
-});
-
-// 根路由返回前端页面
+// 根路由调整（保持原有逻辑）
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/views/index.html');
 });
 
-// 启动服务器
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+// 保持 API 路由不变
+app.get('/api/:date?', (req, res) => {
+  const input = req.params.date;
+  const result = parseDate(input);
+  res.json(result);
 });
+
+// 仅本地开发时启动服务器（新增条件判断）
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
+  });
+}
