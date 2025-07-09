@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "builds": [ // 新增构建声明
+  "builds": [ 
     {
       "src": "server.js",
       "use": "@vercel/node"
@@ -14,6 +14,12 @@
     {
       "src": "/(.*)",
       "dest": "/public/$1"
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/api/:date*",
+      "destination": "/api/date/[date]"
     }
   ]
 }

@@ -1,23 +1,29 @@
-// 顶部新增 Vercel 适配器
-const express = require('express');
-const app = express();
-const port = process.env.PORT || 3000;
+// 仅本地开发时启动服务器（新增条件判断）
+const isProduction = process.env.NODE_ENV === 'production';
 
-// 修改静态资源路径（关键调整）
-// 修改前
-app.use(express.static('public'));
+if (!isProduction) {
+  const express = require('express');
+  const app = express();
+  const port = process.env.PORT || 3000;
 
-// 修改后（需绝对路径）
-app.use(express.static(__dirname + '/public'));
+  // 修改静态资源路径（关键调整）
+  app.use(express.static(__dirname + '/public'));
+  
+  // 根路由调整（保持原有逻辑）
+  const path = require('path');
+  app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html')); // 明确指向 public 目录
+  });
 
-// 必须导出 app 供 Vercel 使用（新增）
-// 文件底部新增（关键修复）
-module.exports = app;
+  // 新增健康检查端点（用于部署验证）
+  app.get('/health', (req, res) => {
+    res.status(200).send('OK');
+  });
 
-// 移除原有条件判断，改为通用启动方式
-app.listen(process.env.PORT || 3000, () => {
-  console.log('Server ready');
-});
+  app.listen(port, () => {
+    console.log(`Local server running on port ${port}`);
+  });
+}
 
 // 解析日期函数
 function parseDate(input) {
@@ -48,35 +54,6 @@ function parseDate(input) {
   };
 }
 
-// 根路由调整（保持原有逻辑）
-const path = require('path');
 
-// 修改根路由处理
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html')); // 明确指向 public 目录
-});
 
-// 保持 API 路由不变
-app.get('/api/:date?', (req, res) => {
-  const input = req.params.date;
-  const result = parseDate(input);
-  res.json(result);
-});
 
-// 仅本地开发时启动服务器（新增条件判断）
-// 在顶部添加环境判断
-const isProduction = process.env.NODE_ENV === 'production';
-
-// 修改静态资源配置
-app.use(express.static(isProduction ? path.join(__dirname, 'public') : 'public'));
-
-// 新增健康检查端点（用于部署验证）
-app.get('/health', (req, res) => {
-  res.status(200).send('OK');
-});
-
-if (!isProduction) {
-  app.listen(port, () => {
-    console.log(`Local server running on port ${port}`);
-  });
-}
