@@ -1,0 +1,28 @@
+name: Build and Deploy to Sealos
+
+on:
+  push:
+    branches:
+      - main   # 当推送到 main 分支时触发部署
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to Sealos Container Registry
+        run: docker login registry.sealos.io -u ${{ secrets.SEALOS_USERNAME }} -p ${{ secrets.SEALOS_PASSWORD }}
+
+      - name: Build Docker image
+        run: |
+          docker build -t registry.sealos.io/ns-1g23ybdp/timestamp-microservice:latest .
+          
+      - name: Push Docker image to Sealos
+        run: |
+          docker push registry.sealos.io/ns-1g23ybdp/timestamp-microservice:latest
