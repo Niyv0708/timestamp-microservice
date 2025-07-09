@@ -3,12 +3,11 @@ name: Build and Deploy to Sealos
 on:
   push:
     branches:
-      - main   # 当推送到 main 分支时触发部署
+      - main   # 推送到 main 分支时触发
 
 jobs:
   build-deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -21,8 +20,59 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t registry.sealos.io/ns-1g23ybdp/timestamp-microservice:latest .
-          
+          # 动态生成镜像标签（当前分支名 + Git 提交哈希）
+          IMAGE_TAG=registry.sealos.io/ns-1g23ybdp/timestamp-microservice:${GITHUB_REF_NAME}-${GITHUB_SHA::8}
+          docker build -t $IMAGE_TAG .
+          # 同时标记为 latest（方便快速部署）
+          docker tag $IMAGE_TAG registry.sealos.io/ns-1g23ybdp/timestamp-microservice:latest
+
       - name: Push Docker image to Sealos
         run: |
           docker push registry.sealos.io/ns-1g23ybdp/timestamp-microservice:latest
+          docker push registry.sealos.io/ns-1g23ybdp/timestamp-microservice:${GITHUB_REF_NAME}-${GITHUB_SHA::8}
+
+### 二、配置 GitHub Secrets（关键准备）
+GitHub Actions 需要 Sealos 账号的认证信息才能推送镜像，需在 GitHub 仓库中配置以下 Secrets（路径：`仓库设置 > Secrets > Actions > New repository secret`）：
+- `SEALOS_USERNAME`：Sealos 账号用户名
+- `SEALOS_PASSWORD`：Sealos 账号密码（或镜像仓库访问令牌）
+
+
+### 三、验证 GitHub Actions 工作流（已有配置优化）
+你提供的 `.github/workflows/untitled.yaml` 已包含基础的构建和推送逻辑，无需大幅修改，但建议补充以下优化：
+1. **添加镜像标签的动态版本**（避免覆盖历史镜像）
+2. **添加构建状态检查**（确保镜像构建成功后再推送）
+
+优化后的工作流文件示例：
+```yaml
+name: Build and Deploy to Sealos
+
+on:
+  push:
+    branches:
+      - main   # 推送到 main 分支时触发
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to Sealos Container Registry
+        run: docker login registry.sealos.io -u ${{ secrets.SEALOS_USERNAME }} -p ${{ secrets.SEALOS_PASSWORD }}
+
+      - name: Build Docker image
+        run: |
+          # 动态生成镜像标签（当前分支名 + Git 提交哈希）
+          IMAGE_TAG=registry.sealos.io/ns-1g23ybdp/timestamp-microservice:${GITHUB_REF_NAME}-${GITHUB_SHA::8}
+          docker build -t $IMAGE_TAG .
+          # 同时标记为 latest（方便快速部署）
+          docker tag $IMAGE_TAG registry.sealos.io/ns-1g23ybdp/timestamp-microservice:latest
+
+      - name: Push Docker image to Sealos
+        run: |
+          docker push registry.sealos.io/ns-1g23ybdp/timestamp-microservice:latest
+          docker push registry.sealos.io/ns-1g23ybdp/timestamp-microservice:${GITHUB_REF_NAME}-${GITHUB_SHA::8}
