@@ -11,16 +11,11 @@ function parseDate(input) {
     date = new Date();
   } 
   // 处理 Unix 时间戳（10位或13位）
-  else if (/^\d{10,13}$/.test(input)) {
-    const timestamp = Number(input);
-    // 如果是10位时间戳则转为13位
-    date = new Date(timestamp.toString().length === 10 ? timestamp * 1000 : timestamp);
+  else if (/^\d+$/.test(input)) {
+    const timestamp = parseInt(input, 10);
+    date = new Date(timestamp);
   } 
-  // 处理 ISO 格式日期（如 "2023-01-01"）
-  else if (/^\d{4}-\d{2}-\d{2}$/.test(input)) {
-    date = new Date(`${input}T00:00:00Z`);
-  } 
-  // 处理其他日期格式
+  // 处理其他格式的日期字符串
   else {
     date = new Date(input);
   }
@@ -31,8 +26,8 @@ function parseDate(input) {
   }
 
   return {
-    unix: date.getTime(),
-    utc: date.toUTCString()
+    unix: date.getTime(),             // 返回毫秒级时间戳
+    utc: date.toUTCString()            // 返回 UTC 格式时间字符串
   };
 }
 
@@ -41,7 +36,9 @@ app.use(express.static('public'));
 
 // API 路由
 app.get('/api/:date?', (req, res) => {
-  const result = parseDate(req.params.date);
+  const input = req.params.date;
+  const result = parseDate(input);
+
   res.json(result);
 });
 
