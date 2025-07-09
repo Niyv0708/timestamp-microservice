@@ -1,23 +1,16 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "server.js",
-      "use": "@vercel/node",
-      "config": { 
-        "includeFiles": ["public/**", "views/**"],
-        "distDir": "."  
-      }
-    }
-  ],
   "routes": [
-    { 
-      "src": "/api/(.*)",  
-      "dest": "server.js" 
+    {
+      "src": "/api/(.*)",
+      "dest": "server.js"
     },
-    { 
-      "src": "/(.*)",     
-      "dest": "/public/$1" 
+    {
+      "src": "/(.*)",
+      "dest": "/public/$1",
+      "headers": {
+        "Cache-Control": "public, max-age=3600"
+      }
     }
   ]
 }
