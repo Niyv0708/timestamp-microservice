@@ -1,18 +1,9 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "api/date/[date].ts",
-      "use": "@vercel/node",
-      "config": {
-        "runtime": "nodejs18.x"
-      }
-    }
-  ],
   "routes": [
     {
-      "src": "/api/([^?]*)?\\??(.*)$",
-      "dest": "/api/date/[date].ts?date=$1&$2"
+      "src": "/api/:date?",
+      "dest": "/api/date/[date].ts"
     },
     {
       "src": "/(.*)",
