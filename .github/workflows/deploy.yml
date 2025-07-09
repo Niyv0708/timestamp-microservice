@@ -15,6 +15,6 @@ jobs:
       - name: Deploy using GH-Pages Action
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.GH_PAT }}
+          github_token: ${{ secrets.NIYV0710 }}
           publish_dir: ./public
           publish_branch: gh-pages
