@@ -1,7 +1,9 @@
 [build]
-functions = "functions"  # 指定函数目录
+command = "echo 'No build needed'"
+publish = "public"
+functions = "functions"
 
 [[redirects]]
-from = "/api/*"          # 匹配所有 /api 开头的路径（包括 /api 和 /api/2023-10-01）
-to = "/.netlify/functions/dateFunction"  # 转发到 dateFunction 函数
-status = 200             # 使用 200 状态码代理请求（非重定向）
+from = "/api/*"
+to = "/.netlify/functions/api"
+status = 200
