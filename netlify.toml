@@ -1,9 +1,9 @@
 [build]
-command = "echo 'No build needed'"
+command = "echo 'No build needed'"  # 无需构建（假设无 TypeScript 编译需求）
 publish = "public"
-functions = "functions"
+functions = "functions"  # 指定 Netlify 函数目录
 
 [[redirects]]
-from = "/api/*"
-to = "/.netlify/functions/api"
-status = 200
+from = "/api/*"  # 匹配所有 /api 开头的路径（如 /api、/api/2023-10-01）
+to = "/.netlify/functions/api?date=:splat"  # 转发到 api.js 函数，并传递路径参数到 date
+status = 200  # 200 状态码表示代理请求（非重定向）
