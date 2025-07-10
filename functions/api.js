@@ -1,7 +1,7 @@
 // functions/api.js
 // Netlify Function 核心日期解析函数
 exports.handler = async (event, context) => {
-  // 新增：输出完整的查询参数对象（调试关键）
+  // 输出完整查询参数对象（调试关键）
   console.log("event.queryStringParameters:", event.queryStringParameters);
   const dateInput = event.queryStringParameters?.date;
 

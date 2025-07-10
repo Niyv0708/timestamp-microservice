@@ -13,8 +13,9 @@ if (!isProduction) {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
   });
 
-  // 模拟 Netlify 重定向：将 /api/* 转发为查询参数 date
+  // 模拟 Netlify 重定向：将 /api/* 转换为查询参数 date（与生产环境一致）
   app.get('/api/*', (req, res) => {
+    // 关键修改：将路径参数转换为查询参数 date（模拟 Netlify 的 ?date=:splat）
     const dateInput = req.params[0];  // 获取路径中的日期部分（如 "1451001600000"）
     // 调用与 Netlify 函数相同的日期解析逻辑
     let parsedDate;
@@ -40,7 +41,7 @@ if (!isProduction) {
   });
 }
 
-// 解析日期函数
+// 解析日期函数（保持不变）
 function parseDate(input) {
   let date;
 
