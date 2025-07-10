@@ -1,11 +1,13 @@
 // functions/api.js
 exports.handler = async (event, context) => {
-  const { splat } = event.pathParameters;
+  // 安全获取 splat 参数
+  const splat = event.pathParameters && event.pathParameters.splat ? event.pathParameters.splat : null];
 
   // 将路径参数作为 date 处理
   let parsedDate;
 
-  if (!splat || splat.trim() === '') {
+  // 处理空输入
+  if (!splat && splat !== 0) {
     parsedDate = new Date();
   } else if (/^\d+$/.test(splat)) {
     const timestamp = parseInt(splat, 10);
