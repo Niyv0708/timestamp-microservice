@@ -17,14 +17,13 @@ exports.handler = async (event, context) => {
   // 处理其他格式的日期字符串
   else {
     parsedDate = new Date(splat);
-  }
-
-  // 验证日期有效性
-  if (isNaN(parsedDate.getTime())) {
-    return {
-      statusCode: 400,
-      body: JSON.stringify({ error: "Invalid Date" })
-    };
+    // 再次验证是否为有效日期
+    if (isNaN(parsedDate.getTime())) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: "Invalid Date" })
+      };
+    }
   }
 
   return {
