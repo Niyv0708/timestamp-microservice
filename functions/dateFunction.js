@@ -1,13 +1,13 @@
 // Netlify Function for date parsing from cloud-functions
 exports.handler = async (event, context) => {
-  const { date } = event.pathParameters || {};
-
+  // 优先从查询参数获取 date
+  const { date } = event.queryStringParameters || {};
   let parsedDate;
 
   // 处理空输入
   if (!date || date.trim() === '') {
     parsedDate = new Date();
-  }
+  } 
   // 处理 Unix 时间戳
   else if (/^\d+$/.test(date)) {
     const timestamp = parseInt(date, 10);

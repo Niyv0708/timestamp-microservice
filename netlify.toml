@@ -4,6 +4,6 @@ publish = "public"
 functions = "functions"
 
 [[redirects]]
-from = "/api/*"
-to = "/.netlify/functions/api?date=:splat"
+from = "/api/:date?"
+to = "/.netlify/functions/dateFunction?date=:date"
 status = 200
