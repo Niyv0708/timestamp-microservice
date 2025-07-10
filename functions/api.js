@@ -1,11 +1,11 @@
 // functions/api.js
 // Netlify Function 核心日期解析函数
 exports.handler = async (event, context) => {
-  // 直接从查询参数获取日期（Netlify 重定向通过 ?date=:splat 传递）
-  const dateInput = event.queryStringParameters?.date;  // 关键修改：移除 pathParameters 依赖
+  // 新增：输出完整的查询参数对象（调试关键）
+  console.log("event.queryStringParameters:", event.queryStringParameters);
+  const dateInput = event.queryStringParameters?.date;
 
-  // 新增调试日志（部署后可在 Netlify 函数日志查看）
-  console.log("Received dateInput:", dateInput);
+  console.log("Received dateInput:", dateInput);  // 原日志
 
   let parsedDate;
 
@@ -32,7 +32,6 @@ exports.handler = async (event, context) => {
     };
   }
 
-  // 返回标准格式的 JSON 结果
   return {
     statusCode: 200,
     body: JSON.stringify({

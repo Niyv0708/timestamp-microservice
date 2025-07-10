@@ -6,18 +6,33 @@ if (!isProduction) {
   const app = express();
   const port = process.env.PORT || 3000;
 
-  // 修改静态资源路径（关键调整）
   app.use(express.static(__dirname + '/public'));
   
-  // 根路由调整（保持原有逻辑）
   const path = require('path');
   app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html')); // 明确指向 public 目录
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
   });
 
-  // 新增健康检查端点（用于部署验证）
-  app.get('/health', (req, res) => {
-    res.status(200).send('OK');
+  // 模拟 Netlify 重定向：将 /api/* 转发为查询参数 date
+  app.get('/api/*', (req, res) => {
+    const dateInput = req.params[0];  // 获取路径中的日期部分（如 "1451001600000"）
+    // 调用与 Netlify 函数相同的日期解析逻辑
+    let parsedDate;
+    if (!dateInput || dateInput.trim() === '') {
+      parsedDate = new Date();
+    } else if (/^\d+$/.test(dateInput)) {
+      parsedDate = new Date(Number(dateInput));
+    } else {
+      parsedDate = new Date(dateInput);
+    }
+    if (isNaN(parsedDate.getTime())) {
+      res.status(400).json({ error: "Invalid Date" });
+    } else {
+      res.json({
+        unix: parsedDate.getTime(),
+        utc: parsedDate.toUTCString()
+      });
+    }
   });
 
   app.listen(port, () => {
