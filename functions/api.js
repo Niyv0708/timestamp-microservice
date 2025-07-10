@@ -1,12 +1,23 @@
 // functions/api.js
 exports.handler = async (event, context) => {
-  // 安全获取 splat 参数
+  // 从查询参数或路径参数中获取日期
+  const { date } = event.queryStringParameters || {};
   const splat = event.pathParameters && event.pathParameters.splat ? event.pathParameters.splat : null;
 
   let parsedDate;
 
+  // 优先使用查询参数 ?date=...
+  if (date) {
+    parsedDate = new Date(date);
+    if (isNaN(parsedDate.getTime())) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: "Invalid Date" })
+      };
+    }
+  }
   // 处理空输入或 'now'
-  if (!splat || splat.toLowerCase() === 'now') {
+  else if (!splat || splat.toLowerCase() === 'now') {
     parsedDate = new Date();
   }
   // 处理 Unix 时间戳
@@ -17,7 +28,6 @@ exports.handler = async (event, context) => {
   // 处理其他格式的日期字符串
   else {
     parsedDate = new Date(splat);
-    // 再次验证是否为有效日期
     if (isNaN(parsedDate.getTime())) {
       return {
         statusCode: 400,
