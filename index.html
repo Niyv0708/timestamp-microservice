@@ -1,107 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Timestamp Microservice</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 2rem;
-            line-height: 1.6;
-        }
-        
-        h1, h2 {
-            color: #2c3e50;
-        }
-        
-        .example-input {
-            background-color: #f8f9fa;
-            border-radius: 5px;
-            padding: 1rem;
-            margin: 1rem 0;
-            font-family: monospace;
-        }
-        
-        input[type="text"] {
-            width: 100%;
-            padding: 0.5rem;
-            margin-top: 0.5rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        
-        button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-top: 0.5rem;
-        }
-        
-        button:hover {
-            background-color: #0056b3;
-        }
-        
-        #result {
-            margin-top: 1rem;
-            background-color: #f8f9fa;
-            border-radius: 5px;
-            padding: 1rem;
-            font-family: monospace;
-            white-space: pre-wrap;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Timestamp Microservice</title>
 </head>
 <body>
-    <h1>Timestamp Microservice</h1>
-    
-    <p>Enter a date in the input field below to get its Unix timestamp and UTC representation.</p>
-    <p>Supported formats:</p>
-    <ul>
-        <li>Empty input (returns current time)</li>
-        <li>Unix timestamp (10 or 13 digit number)</li>
-        <li>ISO date string (e.g., "2023-01-01")</li>
-        <li>Any date format supported by new Date(date_string)</li>
-    </ul>
-    
-    <div class="example-input">
-        <p><strong>Try it out:</strong></p>
-        <p>Example URLs:</p>
-        <ul>
-            <li><a href="/api/2015-12-25">/api/2015-12-25</a></li>
-            <li><a href="/api/1451001600000">/api/1451001600000</a></li>
-        </ul>
-    </div>
-    
-    <form id="dateForm">
-        <label for="dateInput"><strong>Date Input:</strong></label>
-        <input type="text" id="dateInput" name="dateInput" placeholder="Enter a date (optional)">
-        <button type="submit">Get Timestamp</button>
-    </form>
-    
-    <div id="result">API response will appear here</div>
-    
-    <script>
-        document.getElementById('dateForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const dateInput = document.getElementById('dateInput').value.trim();
-            const encodedDate = encodeURIComponent(dateInput);
-            const url = encodedDate ? `/api/${encodedDate}` : '/api';
-            
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('result').textContent = JSON.stringify(data, null, 2);
-                })
-                .catch(error => {
-                    document.getElementById('result').textContent = `Error: ${error}`;
-                });
-        });
-    </script>
+  <h1>Timestamp Microservice</h1>
+  <p>This is a simple timestamp microservice that returns the current time or parses a given date.</p>
+  <ul>
+    <li><a href="/api">API Documentation</a></li>
+    <li><a href="/api/now">Current Timestamp</a></li>
+    <li><a href="/api/2015-12-25">Example Date</a></li>
+    <li><a href="/api/1451001600000">Unix Timestamp Example</a></li>
+  </ul>
 </body>
 </html>
