@@ -1,7 +1,7 @@
 // functions/api.js
 exports.handler = async (event, context) => {
   // 安全获取 splat 参数
-  const splat = event.pathParameters && event.pathParameters.splat ? event.pathParameters.splat : null];
+  const splat = event.pathParameters && event.pathParameters.splat ? event.pathParameters.splat : null;
 
   // 将路径参数作为 date 处理
   let parsedDate;
@@ -16,6 +16,7 @@ exports.handler = async (event, context) => {
     parsedDate = new Date(splat);
   }
 
+  // 验证日期有效性
   if (isNaN(parsedDate.getTime())) {
     return {
       statusCode: 400,
