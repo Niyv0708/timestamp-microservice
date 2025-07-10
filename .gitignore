@@ -1,3 +1,9 @@
-node_modules
+# 忽略 node_modules
+node_modules/
+
+# 忽略 .env 文件
 .env
-.vercel
+
+# 忽略 IDE 配置文件
+.vscode/
+.idea/
