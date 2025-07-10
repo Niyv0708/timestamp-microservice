@@ -3,16 +3,19 @@ exports.handler = async (event, context) => {
   // 安全获取 splat 参数
   const splat = event.pathParameters && event.pathParameters.splat ? event.pathParameters.splat : null;
 
-  // 将路径参数作为 date 处理
   let parsedDate;
 
-  // 处理空输入
-  if (!splat && splat !== 0) {
+  // 处理空输入或 'now'
+  if (!splat || splat.toLowerCase() === 'now') {
     parsedDate = new Date();
-  } else if (/^\d+$/.test(splat)) {
+  }
+  // 处理 Unix 时间戳
+  else if (/^\d+$/.test(splat)) {
     const timestamp = parseInt(splat, 10);
     parsedDate = new Date(timestamp);
-  } else {
+  }
+  // 处理其他格式的日期字符串
+  else {
     parsedDate = new Date(splat);
   }
 
