@@ -1,39 +1,33 @@
 // functions/api.js
 exports.handler = async (event, context) => {
-  // 从查询参数或路径参数中获取日期
+  // 优先从查询参数获取 date
   const { date } = event.queryStringParameters || {};
-  const splat = event.pathParameters && event.pathParameters.splat ? event.pathParameters.splat : null;
 
   let parsedDate;
 
-  // 优先使用查询参数 ?date=...
-  if (date) {
+  // 如果没有查询参数，则尝试从路径参数获取
+  if (!date) {
+    const splat = event.pathParameters && event.pathParameters.splat ? event.pathParameters.splat : null;
+
+    if (!splat || splat.toLowerCase() === 'now') {
+      parsedDate = new Date();
+    } else if (/^\d+$/.test(splat)) {
+      const timestamp = parseInt(splat, 10);
+      parsedDate = new Date(timestamp);
+    } else {
+      parsedDate = new Date(splat);
+    }
+  } else {
+    // 使用查询参数解析日期
     parsedDate = new Date(date);
-    if (isNaN(parsedDate.getTime())) {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ error: "Invalid Date" })
-      };
-    }
   }
-  // 处理空输入或 'now'
-  else if (!splat || splat.toLowerCase() === 'now') {
-    parsedDate = new Date();
-  }
-  // 处理 Unix 时间戳
-  else if (/^\d+$/.test(splat)) {
-    const timestamp = parseInt(splat, 10);
-    parsedDate = new Date(timestamp);
-  }
-  // 处理其他格式的日期字符串
-  else {
-    parsedDate = new Date(splat);
-    if (isNaN(parsedDate.getTime())) {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ error: "Invalid Date" })
-      };
-    }
+
+  // 验证日期有效性
+  if (isNaN(parsedDate.getTime())) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ error: "Invalid Date" })
+    };
   }
 
   return {
